@@ -1,0 +1,55 @@
+<Application x:Class="WinAppClear.App.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:infra="clr-namespace:WinAppClear.App.Infrastructure"
+             xmlns:vm="clr-namespace:WinAppClear.App.ViewModels"
+             xmlns:views="clr-namespace:WinAppClear.App.Views"
+             ShutdownMode="OnMainWindowClose">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/Colors.xaml" />
+                <ResourceDictionary Source="Themes/Controls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <infra:SizeConverter x:Key="Size" />
+            <infra:DateConverter x:Key="Date" />
+            <infra:RelativeDateConverter x:Key="RelDate" />
+            <infra:BoolToVisibilityConverter x:Key="Vis" />
+            <infra:BoolToVisibilityConverter x:Key="NotVis" Invert="True" />
+            <infra:InverseBoolConverter x:Key="Not" />
+            <infra:ToneBrushConverter x:Key="Tone" />
+            <infra:ToneBrushConverter x:Key="SoftTone" Soft="True" />
+
+            <!-- Each page view model is shown with its view. -->
+            <DataTemplate DataType="{x:Type vm:ProgramsViewModel}"><views:ProgramsView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:StoreAppsViewModel}"><views:StoreAppsView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ExtensionsViewModel}"><views:ExtensionsView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:AndroidViewModel}"><views:AndroidView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:HealthViewModel}"><views:HealthView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:UpdatesViewModel}"><views:UpdatesView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:MonitorViewModel}"><views:MonitorView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ForceUninstallViewModel}"><views:ForceUninstallView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:EasyUninstallViewModel}"><views:EasyUninstallView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ForceDeleteViewModel}"><views:ForceDeleteView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ShredderViewModel}"><views:ShredderView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:HistoryViewModel}"><views:HistoryView /></DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SettingsViewModel}"><views:SettingsView /></DataTemplate>
+
+            <!-- Shared page header: title, subtitle and busy bar. -->
+            <DataTemplate x:Key="PageHeader">
+                <StackPanel Margin="0,0,0,16">
+                    <TextBlock Text="{Binding Title}" Style="{StaticResource PageTitle}" />
+                    <TextBlock Text="{Binding Subtitle}" Style="{StaticResource PageSubtitle}" MaxWidth="900" HorizontalAlignment="Left" />
+                </StackPanel>
+            </DataTemplate>
+
+            <!-- Busy overlay placed over page content. -->
+            <Style x:Key="BusyOverlay" TargetType="Border">
+                <Setter Property="Background" Value="#B3F3F5F8" />
+                <Setter Property="Visibility" Value="{Binding IsBusy, Converter={StaticResource Vis}}" />
+                <Setter Property="CornerRadius" Value="10" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

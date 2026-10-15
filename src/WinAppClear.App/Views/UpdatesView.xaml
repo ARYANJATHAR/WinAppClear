@@ -1,0 +1,62 @@
+<UserControl x:Class="WinAppClear.App.Views.UpdatesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,12">
+            <ProgressBar IsIndeterminate="True" Width="80" Margin="0,0,12,0" Visibility="{Binding Updating, Converter={StaticResource Vis}}" />
+            <Button Content="Check again" Command="{Binding RefreshCommand}" Margin="0,0,8,0" />
+            <Button Content="Update selected" Style="{StaticResource PrimaryButton}" Command="{Binding UpdateSelectedCommand}"
+                    IsEnabled="{Binding Updating, Converter={StaticResource Not}}" />
+        </StackPanel>
+        <Border Grid.Row="1" Style="{StaticResource Banner}" Margin="0,0,0,12" Visibility="{Binding Message, Converter={StaticResource Vis}}">
+            <TextBlock Text="{Binding Message}" TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" />
+        </Border>
+        <DataGrid Grid.Row="2" ItemsSource="{Binding Rows}" SelectionMode="Single" RowHeight="46">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="44">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Program" Width="*" SortMemberPath="Name">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{Binding Id}" Style="{StaticResource Small}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Installed" Width="140">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Current}" Style="{StaticResource CellMuted}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Available" Width="140">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Available}" Style="{StaticResource CellText}" Foreground="{StaticResource AccentDarkBrush}" FontWeight="SemiBold" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Status" Width="220">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Status}" Style="{StaticResource CellMuted}" ToolTip="{Binding Status}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

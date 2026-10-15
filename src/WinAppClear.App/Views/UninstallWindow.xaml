@@ -1,0 +1,224 @@
+<Window x:Class="WinAppClear.App.Views.UninstallWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:WinAppClear.App.ViewModels"
+        Title="WinAppClear — Uninstall" Width="980" Height="680" MinWidth="760" MinHeight="520"
+        WindowStartupLocation="CenterOwner" Background="{StaticResource WindowBrush}"
+        FontFamily="{StaticResource UiFont}" Icon="/Assets/winappclear.ico">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="Vis" />
+    </Window.Resources>
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Text="{Binding Heading}" Style="{StaticResource PageTitle}" TextTrimming="CharacterEllipsis" />
+            <TextBlock Style="{StaticResource PageSubtitle}" Text="{Binding Explanation}" />
+        </StackPanel>
+
+        <!-- Stage 1: options -->
+        <Grid Grid.Row="1" Margin="0,18,0,0" Visibility="{Binding IsConfirm, Converter={StaticResource Vis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border Style="{StaticResource Card}" Padding="0">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Jobs}" Margin="0,6">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate DataType="{x:Type vm:UninstallJob}">
+                                <Grid Margin="18,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="&#xE74D;" Style="{StaticResource Icon}" Foreground="{StaticResource TextMutedBrush}" Margin="0,0,12,0" />
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}" />
+                                        <TextBlock Style="{StaticResource Small}">
+                                            <Run Text="{Binding Program.Publisher, Mode=OneWay}" />
+                                            <Run Text="  " />
+                                            <Run Text="{Binding Program.DisplayVersion, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
+            <Grid Grid.Row="1" Margin="0,16,0,0">
+                <StackPanel>
+                    <CheckBox IsChecked="{Binding CreateRestorePoint}" Content="Create a System Restore point first (recommended)" Margin="0,0,0,8" />
+                    <CheckBox IsChecked="{Binding Quiet}" IsEnabled="{Binding QuietAvailable}"
+                              Content="Quiet uninstall — skip the uninstaller's questions when the program supports it" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                    <Button Content="Cancel" Command="{Binding CloseCommand}" Margin="0,0,8,0" IsCancel="True" />
+                    <Button Content="Uninstall" Style="{StaticResource DangerButton}" Command="{Binding StartCommand}" IsDefault="True" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!-- Stage 2: running -->
+        <Grid Grid.Row="1" Margin="0,18,0,0" Visibility="{Binding IsRunning, Converter={StaticResource Vis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel>
+                <TextBlock Text="{Binding ProgressText}" Style="{StaticResource Muted}" FontSize="13.5" />
+                <ProgressBar IsIndeterminate="True" Margin="0,10,0,0" />
+            </StackPanel>
+            <Border Grid.Row="1" Style="{StaticResource Card}" Padding="0" Margin="0,16,0,0">
+                <ItemsControl ItemsSource="{Binding Jobs}" Margin="0,6">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:UninstallJob}">
+                            <Grid Margin="18,9">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" />
+                                <Border Grid.Column="1" Style="{StaticResource Pill}"
+                                        Background="{Binding Tone, Converter={StaticResource SoftTone}}">
+                                    <TextBlock Text="{Binding Status}" FontSize="12" Foreground="{Binding Tone, Converter={StaticResource Tone}}" />
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+            <Button Grid.Row="2" Content="Stop" Command="{Binding CancelCommand}" HorizontalAlignment="Right" Margin="0,16,0,0" />
+        </Grid>
+
+        <!-- Stage 3: review leftovers -->
+        <Grid Grid.Row="1" Margin="0,18,0,0" Visibility="{Binding IsReview, Converter={StaticResource Vis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border Style="{StaticResource Banner}" Background="{StaticResource AccentSoftBrush}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock TextWrapping="Wrap" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center">
+                        <Run FontWeight="SemiBold" Text="Leftovers found." />
+                        <Run Text="High-confidence items are selected. Double-click a row to look at it first." />
+                    </TextBlock>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <Button Style="{StaticResource GhostButton}" Content="High only" Command="{Binding SelectHighCommand}" />
+                        <Button Style="{StaticResource GhostButton}" Content="All" Command="{Binding SelectAllCommand}" />
+                        <Button Style="{StaticResource GhostButton}" Content="None" Command="{Binding SelectNoneCommand}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+            <DataGrid x:Name="LeftoverGrid" Grid.Row="1" Margin="0,12,0,0" ItemsSource="{Binding LeftoversView}" RowHeight="50"
+                      SelectionMode="Single">
+                <DataGrid.InputBindings>
+                    <MouseBinding Gesture="LeftDoubleClick" Command="{Binding OpenItemCommand}"
+                                  CommandParameter="{Binding SelectedItem, ElementName=LeftoverGrid}" />
+                </DataGrid.InputBindings>
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="44">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Item" Width="*" SortMemberPath="Path">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="26" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding KindGlyph}" Style="{StaticResource Icon}" FontSize="14" Foreground="{StaticResource TextSecondaryBrush}" />
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Path}" Style="{StaticResource CellText}" ToolTip="{Binding Path}" />
+                                        <TextBlock Style="{StaticResource Small}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
+                                            <Run Text="{Binding OwnerPrefix, Mode=OneWay}" FontWeight="SemiBold" /><Run Text="{Binding Kind, Mode=OneWay}" /><Run Text=" · " /><Run Text="{Binding Reason, Mode=OneWay}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Match" Width="90" SortMemberPath="Confidence">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Pill}" Background="{Binding Confidence, Converter={StaticResource SoftTone}}">
+                                    <TextBlock Text="{Binding Confidence}" FontSize="11.5" FontWeight="SemiBold"
+                                               Foreground="{Binding Confidence, Converter={StaticResource Tone}}" />
+                                </Border>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Size" Width="90" SortMemberPath="Size">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Size, Converter={StaticResource Size}}" Style="{StaticResource CellMuted}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Grid Grid.Row="2" Margin="0,16,0,0">
+                <TextBlock Text="{Binding SelectionSummary}" Style="{StaticResource Muted}" VerticalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Keep everything" Command="{Binding SkipRemovalCommand}" Margin="0,0,8,0" />
+                    <Button Content="Remove selected" Style="{StaticResource DangerButton}" Command="{Binding RemoveSelectedCommand}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!-- Stage 4: done -->
+        <Grid Grid.Row="1" Margin="0,18,0,0" Visibility="{Binding IsDone, Converter={StaticResource Vis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="36" Height="36" CornerRadius="18" Background="{StaticResource AccentSoftBrush}">
+                            <TextBlock Text="&#xE73E;" Style="{StaticResource Icon}" HorizontalAlignment="Center" Foreground="{StaticResource AccentDarkBrush}" />
+                        </Border>
+                        <TextBlock Text="Done" Style="{StaticResource SectionTitle}" VerticalAlignment="Center" Margin="12,0,0,0" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding Summary}" Style="{StaticResource Muted}" FontSize="13.5" LineHeight="22" Margin="48,6,0,0" />
+                </StackPanel>
+            </Border>
+            <Border Grid.Row="1" Style="{StaticResource Card}" Padding="0" Margin="0,14,0,0">
+                <ItemsControl ItemsSource="{Binding Jobs}" Margin="0,6">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="{x:Type vm:UninstallJob}">
+                            <Grid Margin="18,9">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <Border Grid.Column="1" Style="{StaticResource Pill}" Background="{Binding Tone, Converter={StaticResource SoftTone}}">
+                                    <TextBlock Text="{Binding Status}" FontSize="12" Foreground="{Binding Tone, Converter={StaticResource Tone}}" />
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Border>
+            <Button Grid.Row="2" Content="Close" Style="{StaticResource PrimaryButton}" Command="{Binding CloseCommand}"
+                    HorizontalAlignment="Right" Margin="0,16,0,0" />
+        </Grid>
+    </Grid>
+</Window>

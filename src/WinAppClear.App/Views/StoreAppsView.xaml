@@ -1,0 +1,90 @@
+<UserControl x:Class="WinAppClear.App.Views.StoreAppsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="320" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid>
+                <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Padding="30,6,8,6" />
+                <TextBlock Text="&#xE721;" Style="{StaticResource Icon}" FontSize="13" Margin="10,0,0,0" Foreground="{StaticResource TextMutedBrush}" IsHitTestVisible="False" />
+                <TextBlock Text="Search apps" Margin="31,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextMutedBrush}"
+                           IsHitTestVisible="False" Visibility="{Binding Search, Converter={StaticResource NotVis}}" />
+            </Grid>
+            <CheckBox Grid.Column="1" Content="Show protected Windows components" IsChecked="{Binding ShowProtected}" Margin="16,0,0,0" />
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Button Content="Refresh" Command="{Binding RefreshCommand}" Margin="0,0,8,0" />
+                <Button Content="Remove selected" Style="{StaticResource DangerButton}" Command="{Binding UninstallCommand}" CommandParameter="{x:Null}" />
+            </StackPanel>
+        </Grid>
+        <DataGrid Grid.Row="1" ItemsSource="{Binding View}" SelectionMode="Single" RowHeight="52">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="44">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding IsRemovable}" HorizontalAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="App" Width="*" SortMemberPath="Name">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="40" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Border Width="30" Height="30" CornerRadius="7" Background="{StaticResource HoverBrush}" HorizontalAlignment="Left">
+                                    <Grid>
+                                        <TextBlock Text="{Binding Initial}" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" />
+                                        <Image Source="{Binding Icon}" Width="26" Height="26" RenderOptions.BitmapScalingMode="HighQuality" />
+                                    </Grid>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                        <Border Style="{StaticResource Pill}" Margin="8,0,0,0" Padding="6,0" Visibility="{Binding IsRemovable, Converter={StaticResource NotVis}}">
+                                            <TextBlock Text="Protected" FontSize="10.5" Foreground="{StaticResource TextSecondaryBrush}" />
+                                        </Border>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Publisher}" Style="{StaticResource Small}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Installed" Width="110" SortMemberPath="Installed">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Installed, Converter={StaticResource Date}}" Style="{StaticResource CellMuted}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Version" Width="140" SortMemberPath="Version">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Version}" Style="{StaticResource CellMuted}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="56">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource GhostButton}" ToolTip="Remove" IsEnabled="{Binding IsRemovable}"
+                                    Command="{Binding DataContext.UninstallCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" CommandParameter="{Binding}">
+                                <TextBlock Text="&#xE74D;" Style="{StaticResource Icon}" FontSize="14" Foreground="{StaticResource DangerBrush}" />
+                            </Button>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>
