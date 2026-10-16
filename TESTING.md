@@ -1,5 +1,11 @@
 # WinAppClear validation
 
+Real demo installation/uninstall validation on 16 October 2026: **21 integration checks passed**, including actual HKCU installation discovery, registered uninstaller execution, leftover scanning, file/registry backup, cleanup and restoration. See [demo integration results](docs/store/DEMO-INTEGRATION-RESULTS.md) for scope, commands and evidence. Machine-wide MSI/VM acceptance remains separate.
+
+Latest search/UI fix: **0.1.5**. See [search-fix verification](docs/store/SEARCH-FIX-0.1.5.md) for the new tests, screenshots, artifacts and remaining VM-only checks.
+
+For the newer **0.1.4 Microsoft Store candidate**, see [Store validation](docs/store/VALIDATION.md). Its build passes all 68 tests with the updated test tooling and includes an inspected offline MSI. The candidate is unsigned, and Windows VM lifecycle/privileged integration checks remain pending. The following 0.1.3 results are retained as historical release evidence.
+
 Release: **0.1.3**, Windows x64. Verified on 15 October 2026 using .NET SDK 8.0.424.
 
 ## Build and tests

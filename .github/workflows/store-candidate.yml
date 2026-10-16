@@ -1,0 +1,38 @@
+name: Store candidate
+on:
+  workflow_dispatch:
+  push:
+    paths: ['src/**', 'tests/**', 'packaging/**', 'scripts/**', 'docs/store/**', 'Directory.Build.props', '.github/workflows/store-candidate.yml']
+  pull_request:
+    paths: ['src/**', 'tests/**', 'packaging/**', 'scripts/**', 'docs/store/**', 'Directory.Build.props', '.github/workflows/store-candidate.yml']
+permissions:
+  contents: read
+jobs:
+  unsigned-candidate:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build, test and inspect offline MSI
+        shell: pwsh
+        run: ./scripts/Build-Store.ps1
+      - name: Real per-user demo installation, cleanup and restore
+        shell: pwsh
+        run: dotnet run --project tests/WinAppClear.Integration/WinAppClear.Integration.csproj -c Release -- artifacts/integration-evidence
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: WinAppClear-unsigned-store-candidate
+          path: |
+            artifacts/store/**/*.msi
+            artifacts/store/**/SHA256SUMS.txt
+            artifacts/store/**/release-status.json
+            artifacts/store/**/UNSIGNED-DO-NOT-SUBMIT.txt
+            artifacts/store/**/submission/**
+            artifacts/store/**/validation/*.json
+            artifacts/store/**/validation/*.trx
+            artifacts/integration-evidence/
+          if-no-files-found: warn

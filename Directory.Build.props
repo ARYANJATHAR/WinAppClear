@@ -9,7 +9,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <SelfContained>false</SelfContained>
-    <Version>0.1.3</Version>
+    <Version>0.1.5</Version>
     <Product>WinAppClear</Product>
     <Company>WinAppClear</Company>
     <NoWarn>$(NoWarn);CA1416</NoWarn>

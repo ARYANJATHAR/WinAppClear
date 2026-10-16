@@ -14,7 +14,8 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid>
-                <TextBox Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Padding="30,6,8,6" />
+                <TextBox x:Name="ProgramSearch" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" Padding="30,6,8,6"
+                         AutomationProperties.Name="Search programs or publishers" />
                 <TextBlock Text="&#xE721;" Style="{StaticResource Icon}" FontSize="13" Margin="10,0,0,0" Foreground="{StaticResource TextMutedBrush}" IsHitTestVisible="False" />
                 <TextBlock Text="Search programs or publishers" Margin="31,0,0,0" VerticalAlignment="Center" Foreground="{StaticResource TextMutedBrush}"
                            IsHitTestVisible="False" Visibility="{Binding Search, Converter={StaticResource NotVis}}" />

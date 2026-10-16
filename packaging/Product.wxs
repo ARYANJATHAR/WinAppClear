@@ -1,0 +1,30 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="WinAppClear" Manufacturer="WinAppClear" Version="$(var.ProductVersion)"
+           Language="1033" UpgradeCode="E81C1F56-6F4F-47DB-91F9-21F7595B23E4"
+           Scope="perMachine" InstallerVersion="500" Compressed="yes">
+    <SummaryInformation Description="WinAppClear offline Windows x64 installer" />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of WinAppClear is already installed." Schedule="afterInstallInitialize" />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/ARYANJATHAR/WinAppClear" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/ARYANJATHAR/WinAppClear/issues" />
+    <Property Id="ARPPRODUCTICON" Value="WinAppClearIcon" />
+    <Icon Id="WinAppClearIcon" SourceFile="$(var.RepoRoot)\src\WinAppClear.App\Assets\winappclear.ico" />
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="WinAppClear">
+        <Component Id="Application" Guid="42DA59CA-0EC3-46CC-9C59-96ABCE2F6589" Bitness="always64">
+          <File Id="WinAppClearExe" Source="$(var.PayloadDir)\WinAppClear.exe" KeyPath="yes">
+            <Shortcut Id="StartMenuShortcut" Directory="ProgramMenuFolder" Name="WinAppClear" Advertise="yes" Icon="WinAppClearIcon" WorkingDirectory="INSTALLFOLDER" />
+          </File>
+        </Component>
+        <Component Id="LicenseDocument" Guid="AA7020CD-2252-4BDC-9E84-CF24A8F9E131"><File Source="$(var.RepoRoot)\LICENSE" KeyPath="yes" /></Component>
+        <Component Id="PrivacyDocument" Guid="078FBE3E-69AC-48D5-AD4B-C4D7299491BF"><File Source="$(var.RepoRoot)\docs\store\PRIVACY.md" KeyPath="yes" /></Component>
+        <Component Id="ThirdPartyDocument" Guid="D4C872AA-8F82-4EC2-9511-6DFAB2B826B3"><File Source="$(var.RepoRoot)\docs\store\THIRD-PARTY-NOTICES.md" KeyPath="yes" /></Component>
+        <Component Id="ThirdPartyLicenses" Guid="74DB447D-CC7C-4D36-9523-F8F0E0956279"><File Source="$(var.PayloadDir)\THIRD-PARTY-LICENSES.txt" KeyPath="yes" /></Component>
+      </Directory>
+    </StandardDirectory>
+    <Feature Id="MainFeature" Title="WinAppClear" Level="1">
+      <ComponentRef Id="Application" /><ComponentRef Id="LicenseDocument" /><ComponentRef Id="PrivacyDocument" /><ComponentRef Id="ThirdPartyDocument" /><ComponentRef Id="ThirdPartyLicenses" />
+    </Feature>
+  </Package>
+</Wix>

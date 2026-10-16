@@ -4,6 +4,8 @@
 
 WinAppClear runs a program's own uninstaller, scans for leftover files and registry entries, and lets you choose what to clean up. It also includes installation logging, backups, and tools for managing unwanted apps and background activity. Built with C#/.NET 8 and WPF; licensed under [MIT](LICENSE).
 
+**Microsoft Store preparation:** source version 0.1.5 includes the search alignment/count fix, an offline MSI build, signature verification, actual-interface listing assets and submission documentation. It is not published or certified in Microsoft Store yet. Start with [the final five steps](docs/store/FINAL-FIVE-STEPS.md), [packaging instructions](packaging/README.md), and [latest validation](docs/store/SEARCH-FIX-0.1.5.md). Existing GitHub release downloads below remain version 0.1.3 until the signed release is published.
+
 <p align="center">
   <img src="docs/images/winappclear-overview.png" alt="WinAppClear interface showing sample installed programs and cleanup tools" width="1100" />
   <br />

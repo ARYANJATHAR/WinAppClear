@@ -95,18 +95,20 @@ public sealed class SystemSnapshot
     ];
 
     /// <summary>Takes a snapshot. Takes from a few seconds to a couple of minutes depending on the PC.</summary>
-    public static SystemSnapshot Take(IProgress<string>? progress = null, CancellationToken ct = default)
+    public static SystemSnapshot Take(IProgress<string>? progress = null, CancellationToken ct = default,
+        IReadOnlyList<string>? fileRoots = null,
+        IReadOnlyList<(RegistryHive Hive, RegistryView View, string SubKey)>? registryRoots = null)
     {
         var snap = new SystemSnapshot();
         var excluded = ExcludedFolders.Select(PathUtil.TrimEnd).ToList();
 
-        foreach (var root in FileRoots.Where(Directory.Exists).Distinct(StringComparer.OrdinalIgnoreCase))
+        foreach (var root in (fileRoots ?? FileRoots).Where(Directory.Exists).Distinct(StringComparer.OrdinalIgnoreCase))
         {
             progress?.Report($"Recording files in {root}…");
             WalkFiles(snap, root, excluded, ct, recurse: !root.EndsWith("drivers", StringComparison.OrdinalIgnoreCase));
         }
 
-        foreach (var (hive, view, sub) in RegistryRoots)
+        foreach (var (hive, view, sub) in registryRoots ?? RegistryRoots)
         {
             ct.ThrowIfCancellationRequested();
             progress?.Report($"Recording registry {RegistryPath.HiveShortName(hive)}\\{sub} ({RegistryPath.ViewName(view)}-bit)…");

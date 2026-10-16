@@ -25,7 +25,7 @@ public partial class ForceUninstallViewModel : PageViewModel
     public ObservableCollection<InstalledProgram> BrokenPrograms { get; } = [];
     public override string Title => "Force Uninstall";
     public override string Subtitle =>
-        "For programs that won't uninstall normally, or folders a program left behind. WinAppClear closes the program, then finds and removes everything that belongs to it.";
+        "For programs that won't uninstall normally, or folders a program left behind. Review detected leftovers and choose which items to remove.";
 
     protected override Task LoadAsync() => LoadBroken();
 

@@ -519,11 +519,20 @@ public sealed class DemoDataTests : IDisposable
                 foreach (var name in new[] { "Nebula Editor", "Aurora Player", "Orbit Notes" })
                     vm.Rows.Add(new(Program(folder: Path.Combine(root, name), name: name)));
                 Assert.Equal(3, vm.View.Cast<object>().Count());
+                Assert.StartsWith("3 programs ·", vm.Summary);
                 vm.Search = "aurora";
                 Assert.Equal("Aurora Player", Assert.Single(vm.View.Cast<WinAppClear.App.ViewModels.ProgramRow>()).Name);
+                Assert.StartsWith("1 matching program ·", vm.Summary);
+                Assert.Null(vm.EmptyText);
+                vm.Search = "  AURORA  ";
+                Assert.Single(vm.View.Cast<object>());
                 vm.Search = "NO MATCH";
                 Assert.Empty(vm.View.Cast<object>());
+                Assert.StartsWith("0 matching programs ·", vm.Summary);
+                Assert.Contains("NO MATCH", vm.EmptyText);
                 vm.Search = "";
+                Assert.Null(vm.EmptyText);
+                Assert.StartsWith("3 programs ·", vm.Summary);
 
                 var assembly = typeof(WinAppClear.App.Views.ProgramsView).Assembly;
                 var pageTypes = assembly.GetTypes().Where(t => t.Namespace == "WinAppClear.App.Views" &&
@@ -539,6 +548,10 @@ public sealed class DemoDataTests : IDisposable
                     Assert.True(view.ActualWidth > 0, type.Name);
                     if (view is WinAppClear.App.Views.ProgramsView)
                     {
+                        var search = Assert.IsType<System.Windows.Controls.TextBox>(view.FindName("ProgramSearch"));
+                        search.ApplyTemplate();
+                        var host = Assert.IsType<System.Windows.Controls.ScrollViewer>(search.Template.FindName("PART_ContentHost", search));
+                        Assert.Equal(new System.Windows.Thickness(0), host.Margin);
                         var grid = Assert.IsType<System.Windows.Controls.DataGrid>(view.FindName("Grid"));
                         Assert.Equal(3, grid.Items.Count);
                         // Standalone controls have no presentation source to resolve star column widths.

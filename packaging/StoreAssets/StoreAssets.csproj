@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><UseWPF>true</UseWPF></PropertyGroup>
+  <ItemGroup>
+    <Using Include="System.IO" />
+    <ProjectReference Include="../../src/WinAppClear.App/WinAppClear.App.csproj" />
+    <Resource Include="../../src/WinAppClear.App/Assets/winappclear.ico" Link="Assets/winappclear.ico" />
+    <Resource Include="../../src/WinAppClear.App/Assets/winappclear-512.png" Link="Assets/winappclear-512.png" />
+  </ItemGroup>
+</Project>

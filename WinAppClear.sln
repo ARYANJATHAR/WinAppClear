@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -14,6 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{AB766201-518B-4591-A4C9-14D851D26FC4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinAppClear.Core.Tests", "tests\WinAppClear.Core.Tests\WinAppClear.Core.Tests.csproj", "{2CE8A127-C03C-40DF-BB60-72296E7E5B73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinAppClear.Integration", "tests\WinAppClear.Integration\WinAppClear.Integration.csproj", "{9B7BFA65-466B-47CA-98D1-E22D9B8910E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,11 +42,16 @@ Global
 		{2CE8A127-C03C-40DF-BB60-72296E7E5B73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2CE8A127-C03C-40DF-BB60-72296E7E5B73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2CE8A127-C03C-40DF-BB60-72296E7E5B73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B7BFA65-466B-47CA-98D1-E22D9B8910E1}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{9B7BFA65-466B-47CA-98D1-E22D9B8910E1}.Debug|Any CPU.Build.0 = Debug|x64
+		{9B7BFA65-466B-47CA-98D1-E22D9B8910E1}.Release|Any CPU.ActiveCfg = Release|x64
+		{9B7BFA65-466B-47CA-98D1-E22D9B8910E1}.Release|Any CPU.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{EBDE6A79-C02E-4409-B13D-8D430594413B} = {05D935B5-1A19-4412-B42C-67BE9F109D77}
 		{9D579663-607D-4F14-85FB-2B9CE5DA6D5A} = {05D935B5-1A19-4412-B42C-67BE9F109D77}
 		{0B76F7E2-098A-4910-A82A-A8952BDA3AC3} = {05D935B5-1A19-4412-B42C-67BE9F109D77}
 		{2CE8A127-C03C-40DF-BB60-72296E7E5B73} = {AB766201-518B-4591-A4C9-14D851D26FC4}
+		{9B7BFA65-466B-47CA-98D1-E22D9B8910E1} = {AB766201-518B-4591-A4C9-14D851D26FC4}
 	EndGlobalSection
 EndGlobal

@@ -103,8 +103,8 @@ public partial class UninstallViewModel : ObservableObject
     public Func<InstalledProgram, CancellationToken, Task<List<LeftoverItem>>>? CustomScan { get; init; }
 
     public string Explanation => ForceMode
-        ? "WinAppClear will find everything that belongs to this program and let you choose what to remove. Nothing is deleted without a backup."
-        : "WinAppClear runs each program's own uninstaller, then finds what it left behind. Nothing is deleted without a backup.";
+        ? "WinAppClear looks for related leftovers and lets you choose what to remove. Selected cleanup items must be backed up before removal."
+        : "WinAppClear runs each program's own uninstaller, then scans for related leftovers. WinAppClear backs up selected cleanup items; the program's own uninstaller controls its changes.";
 
     public string Heading => Jobs.Count == 1 ? $"Uninstall {Jobs[0].Name}" : $"Uninstall {Jobs.Count} programs";
 

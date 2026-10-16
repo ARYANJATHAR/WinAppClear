@@ -87,6 +87,7 @@ public partial class ProgramsViewModel : PageViewModel
     {
         View = CollectionViewSource.GetDefaultView(Rows);
         View.Filter = o => o is ProgramRow r && Matches(r);
+        View.CollectionChanged += (_, _) => UpdateVisibleSummary();
     }
 
     partial void OnFilterChanged(ProgramFilter value)
@@ -96,13 +97,18 @@ public partial class ProgramsViewModel : PageViewModel
         ApplyFilter();
     }
 
-    partial void OnSearchChanged(string value) => View.Refresh();
+    partial void OnSearchChanged(string value)
+    {
+        View.Refresh();
+        UpdateVisibleSummary();
+    }
 
     private bool Matches(ProgramRow r)
     {
         if (string.IsNullOrWhiteSpace(Search)) return true;
-        return r.Name.Contains(Search, StringComparison.OrdinalIgnoreCase) ||
-               r.Publisher.Contains(Search, StringComparison.OrdinalIgnoreCase);
+        var query = Search.Trim();
+        return r.Name.Contains(query, StringComparison.OrdinalIgnoreCase) ||
+               r.Publisher.Contains(query, StringComparison.OrdinalIgnoreCase);
     }
 
     protected override async Task LoadAsync() => await ReloadAsync();
@@ -122,7 +128,6 @@ public partial class ProgramsViewModel : PageViewModel
         _all = programs.Select(p => new ProgramRow(p) { IsHibernated = hibernated.Contains(p.Id) }).ToList();
         foreach (var row in _all) row.PropertyChanged += RowChanged;
         ApplyFilter();
-        Summary = $"{_all.Count} programs · {PathUtil.FormatSize(_all.Sum(r => r.Size ?? 0))}";
         MainViewModel.Instance?.SetBadge("All Programs", _all.Count.ToString());
         _ = LoadIconsAsync(_all);
         _ = MeasureMissingSizesAsync(_all);
@@ -131,6 +136,7 @@ public partial class ProgramsViewModel : PageViewModel
     private void RowChanged(object? sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(ProgramRow.IsSelected)) SelectedCount = _all.Count(r => r.IsSelected);
+        if (e.PropertyName == nameof(ProgramRow.Size)) UpdateVisibleSummary();
     }
 
     private void ApplyFilter()
@@ -177,7 +183,18 @@ public partial class ProgramsViewModel : PageViewModel
         Rows.Clear();
         foreach (var r in rows) Rows.Add(r);
         View.Refresh();
-        EmptyText = Rows.Count > 0 ? null : Filter switch
+        UpdateVisibleSummary();
+    }
+
+    private void UpdateVisibleSummary()
+    {
+        var visible = View.Cast<ProgramRow>().ToList();
+        var searching = !string.IsNullOrWhiteSpace(Search);
+        var label = visible.Count == 1 ? "program" : "programs";
+        Summary = $"{visible.Count} {(searching ? "matching " : "")}{label} · {PathUtil.FormatSize(visible.Sum(r => r.Size ?? 0))}";
+        EmptyText = visible.Count > 0 ? null : searching
+            ? $"No programs match \"{Search.Trim()}\". Try another name or publisher."
+            : Filter switch
         {
             ProgramFilter.Recent => "Nothing was installed in the last 30 days.",
             ProgramFilter.Infrequent => "No programs are known to be unused for 60+ days. (Windows only records use for some programs.)",
@@ -205,7 +222,7 @@ public partial class ProgramsViewModel : PageViewModel
         catch { return null; }
     }
 
-    private static async Task MeasureMissingSizesAsync(List<ProgramRow> rows)
+    private async Task MeasureMissingSizesAsync(List<ProgramRow> rows)
     {
         foreach (var row in rows.Where(r => r.Program.EstimatedSizeBytes is null))
         {

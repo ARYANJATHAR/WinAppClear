@@ -23,7 +23,7 @@ public partial class MonitorViewModel : PageViewModel
     public ObservableCollection<InstallLog> Logs { get; } = [];
     public override string Title => "Install Monitor";
     public override string Subtitle =>
-        "Record everything a program's installer adds — files, registry entries, services and tasks — so you can remove all of it later, perfectly.";
+        "Record before-and-after installation snapshots, then review detected changes. Start recording before setup; unrelated activity may also appear.";
 
     public ObservableCollection<string> SelectedDetails { get; } = [];
 
