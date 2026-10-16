@@ -54,13 +54,17 @@ try {
         foreach ($download in $framework.downloadDependencies) {
             if ($download.name -notmatch '^Microsoft\.(NETCore|WindowsDesktop)\.App\.Runtime\.win-x64$') { continue }
             $resolvedVersion = ($download.version.Trim('[',']') -split ',')[0].Trim()
+            $runtimeFound = $false
             foreach ($root in $assetGraph.packageFolders.PSObject.Properties.Name) {
                 $runtimeDir = Join-Path $root ($download.name.ToLowerInvariant()+'/'+$resolvedVersion)
-                if (!(Test-Path $runtimeDir)) { throw "Runtime notice directory missing: $runtimeDir" }
+                if (!(Test-Path $runtimeDir)) { continue }
+                $runtimeFound = $true
                 foreach ($notice in (Get-ChildItem $runtimeDir -File | Where-Object Name -Match '^(LICENSE|THIRD-PARTY-NOTICES)(\.|$)')) {
                     $noticeParts += "`r`n===== $($download.name)/$resolvedVersion / $($notice.Name) =====`r`n"; $noticeParts += Get-Content $notice.FullName -Raw; $noticeCount++
                 }
+                break
             }
+            if (!$runtimeFound) { throw "Runtime notice directory missing in all package caches: $($download.name)/$resolvedVersion" }
         }
     }
     if ($noticeCount -lt 4) { throw 'Expected restored dependency/runtime license notices were not found.' }
